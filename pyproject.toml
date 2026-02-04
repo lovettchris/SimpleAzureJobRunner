@@ -1,0 +1,91 @@
+# build system using setuptools
+[build-system]
+requires = ["setuptools", "setuptools-scm"]
+build-backend = "setuptools.build_meta"
+
+# project metadata
+[project]
+name = "simple_azure_job_runner"
+version = "0.1"
+authors = [
+    {name = "Chris Lovett"}
+]
+description = "This is a low-tech Azure job runner written entirely in python. It supports submitting jobs to a pool of VM's that you created each running an instance of the job runner, where it coordinates which jobs are running on which VM through an Azure Storage table. It supports both Linux and Windows VM types."
+readme = "README.md"
+requires-python = ">=3.10"
+
+# python package dependencies
+dependencies = [
+    "artifacts-keyring",
+    "azure-data-tables",
+    "azure-identity",
+    "azure-keyvault-keys",
+    "azure-keyvault-secrets",
+    "azure-mgmt-compute==33.0.0",
+    "azure-storage-blob",
+    "tqdm",
+]
+
+# additional dependencies for development only.
+[project.optional-dependencies]
+dev = [
+    "black==24.10.0",
+    "black[jupyter]",
+    "isort",
+    "flake8",
+    "flake8-absolute-import",
+    "Flake8-pyproject",
+    "mypy",
+    "mypy-extensions",
+    "types-python-dateutil",
+]
+test = [
+    "pytest==7.3.1",
+    "Mock",
+]
+
+all = ["simple_azure_job_runner[dev,test]"]
+
+[tool.setuptools.packages]
+find = {}
+
+# Formatting settings (also used by pre-commit)
+[tool.black]
+line-length = 120
+
+[tool.flake8]
+ignore = "E203, E111,E402,E722,W503,W504,F405,F403"
+max-line-length = 120
+max-complexity = 45
+exclude = ".git,__pycache__,wandb,recordings,dist,*_pb2.py,*_pb2_grpc.py"
+
+[tool.isort]
+profile = "black"
+src_paths = ["simple_azure_job_runner"]
+force_sort_within_sections = true
+force_alphabetical_sort_within_sections = true
+known_ours = []
+sections = ["FUTURE", "STDLIB" , "THIRDPARTY", "OURS", "FIRSTPARTY", "LOCALFOLDER"]
+skip_glob = ["docs/*", ".git/*", "dist/**"]
+
+[tool.mypy]
+ignore_missing_imports = true
+strict_optional = false
+exclude = [ "docs/", "dist/"]
+
+[tool.mypy-lightning.pytorch.utilities.parsing.AttributeDict]
+disable_error_code = "attr-defined"
+
+[tool.mypy-yaml]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+log_cli = true
+filterwarnings = [
+    "ignore::DeprecationWarning"
+]
+markers = [
+    "manual: tests that you need to run manually (never in automated CI)",
+    "nightly: tests that run nightly, not every CI",
+    "dependency: marks tests that have dependencies",
+]
