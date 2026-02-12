@@ -13,6 +13,7 @@ log = logger.get_root_logger()
 AZURE_VM_RUNNING_MSG = "VM guest agent was detected running"
 DEFAULT_UNAVAILABLE_TIMEOUT = 600
 
+
 class AzureVmState:
     """This class represents the state of an Azure VM."""
 
@@ -91,11 +92,13 @@ class AzureVmState:
 
 
 class AzureVms:
-    def __init__(self,
-                 subscription_id: str,
-                 resource_group: str,
-                 managed_identity: str = None,
-                 unavailable_timeout: int = DEFAULT_UNAVAILABLE_TIMEOUT):
+    def __init__(
+        self,
+        subscription_id: str,
+        resource_group: str,
+        managed_identity: str = None,
+        unavailable_timeout: int = DEFAULT_UNAVAILABLE_TIMEOUT,
+    ):
         self.subscription_id = subscription_id
         self.resource_group = resource_group
         self.managed_identity = managed_identity
