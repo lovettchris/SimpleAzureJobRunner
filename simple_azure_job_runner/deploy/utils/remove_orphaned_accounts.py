@@ -161,10 +161,14 @@ def remove_orphaned_account(json_file: str, dry_run: bool = False):
             else:
                 prompt = f"Removing stale role {role_id} ..."
                 cmd = f'role assignment delete --ids "{role_id}"'
-                result = run_az_cmd(cmd, prompt, no_data_ok=True)
-
-                if "provisioningState" in result:
-                    print(result["provisioningState"])
+                try:
+                    result = run_az_cmd(cmd, prompt, no_data_ok=True)
+                    if "provisioningState" in result:
+                        print(result["provisioningState"])
+                except Exception as e:
+                    msg = str(e)
+                    print(f"  Failed to remove role {role_id}: {msg}")
+                    errors.append(f"Failed to remove role {role_id}: {msg}")
 
     if errors:
         print("\n".join(errors))
